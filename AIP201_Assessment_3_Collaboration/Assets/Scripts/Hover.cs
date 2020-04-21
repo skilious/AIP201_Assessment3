@@ -4,15 +4,25 @@ using UnityEngine;
 
 public class Hover : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public float horizontalSpeed;
+    public float verticalSpeed;
+    public float amplitude = 1.0f;
+
+    float distanceFromGround = 2.0f;
+    public Vector3 tempPos;
+
+    public float acceleration;
+    public float velocity;
     void Start()
     {
-        
+        tempPos = transform.position;
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        
+        tempPos.x += horizontalSpeed;
+        tempPos.y = Mathf.Sin(Time.realtimeSinceStartup * verticalSpeed) * amplitude + distanceFromGround;
+        transform.position = tempPos;
     }
 }
