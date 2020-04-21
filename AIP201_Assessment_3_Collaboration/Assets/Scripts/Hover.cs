@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class Hover : MonoBehaviour
 {
-    public float horizontalSpeed;
-    public float verticalSpeed;
+    public float heightFromGround;
     public float amplitude = 1.0f;
 
-    float distanceFromGround = 2.0f;
+    float distanceFromGround = 1.0f;
     public Vector3 tempPos;
 
+    public float maxSpeed;
+    public float speed;
     public float acceleration;
-    public float velocity;
+    public float rotationSpeed;
+    float rotation;
+    float steeringRotation;
     void Start()
     {
         tempPos = transform.position;
@@ -21,8 +24,39 @@ public class Hover : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        tempPos.x += horizontalSpeed;
-        tempPos.y = Mathf.Sin(Time.realtimeSinceStartup * verticalSpeed) * amplitude + distanceFromGround;
+        Vector3 current_direction = transform.eulerAngles;
+        //Hover formula
+        tempPos.y = Mathf.Sin(Time.realtimeSinceStartup * heightFromGround) * amplitude + distanceFromGround;
+
+        //steering
+        rotation = Input.GetAxis("Horizontal") * 30.0f;
+        steeringRotation = Input.GetAxis("Horizontal") * rotationSpeed;
+
+        current_direction.y += rotationSpeed * steeringRotation * Time.fixedDeltaTime;
+        current_direction.z = -rotation;
+        transform.eulerAngles = current_direction;
+        //Not yet useful as it interferes with different rotations (Will implement this for better results on rotation later).
+        //transform.rotation = Quaternion.Slerp(transform.rotation, tiltRotation, Time.fixedDeltaTime * rotationSmoothness);
+
+        //Velocity forward and backward.
+        if (Input.GetAxis("Vertical") > 0.9f)
+        {
+            speed = acceleration + Mathf.Clamp(speed, 0, maxSpeed - acceleration);
+        }
+        //Decelerates overtime
+        else
+        {
+            speed = -0.1f + Mathf.Clamp(speed, acceleration, maxSpeed);
+        }
+        //Reverse (Depends on how slow you want it w/ acceleration).
+        if (Input.GetAxis("Vertical") < -0.9f)
+        {
+            speed -= acceleration + Mathf.Clamp(speed, acceleration, maxSpeed);
+        }        
+
+        //Finalise position as tempPos.
+        tempPos += transform.rotation * Vector3.forward * speed * Time.fixedDeltaTime;
         transform.position = tempPos;
     }
 }
+//Tai's shit here.
