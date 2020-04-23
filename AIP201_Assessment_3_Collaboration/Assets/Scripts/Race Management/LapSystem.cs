@@ -19,7 +19,7 @@ public class LapSystem : MonoBehaviour
     float PreviousLapCounter = 0.0f;
     int PositionInRace = 0;
     float PlayerLapCounter = 0.0f;
-
+    public int checkpoint_;
     
     void Start()
     {
