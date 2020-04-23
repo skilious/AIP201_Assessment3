@@ -6,69 +6,78 @@ using UnityEngine.UI;
 
 public class LapSystem : MonoBehaviour
 {
-    public List<GameObject> Racers;
-    public GameObject CheckPointManager;
-    public Text lap, position; 
+    public List<GameObject> Racers;             //operator provided list of cars that are racing
+    public GameObject CheckPointManager;        //GO for object checkpoint management system
+    public Text lap, position;                  //UI elements for Player's GUI
     [HideInInspector]
-    List<GameObject> Checkpoints;
+    public List<Checkpoint> Checkpoints;               //automatically populated list of checkpoints
     [HideInInspector]
-    public List<CarController> cars = new List<CarController>();
+    public List<CarController> cars = new List<CarController>();    //automatically populated list of car checkpoint scripts
     [HideInInspector]
-    public float IndexAmnt;
+    public float IndexAmnt;                     //amount to index the lap count float, solved by 1/<number of checkpoints>
 
-    float PreviousLapCounter = 0.0f;
-    int PositionInRace = 0;
-    float PlayerLapCounter = 0.0f;
-    public int checkpoint_;
+    float PreviousLapCounter = 0.0f;            //hold for previous leader
+    int PositionInRace = 0;                     //global for player's car position
+    float PlayerLapCounter = 0.0f;              //global for lap + fraction
+    public int checkpoint_;                     //current cehckpoint
     
     void Start()
     {
-        Checkpoints = CheckPointManager.GetComponent<FindPath>().checkpoints;
-        IndexAmnt = 1.0f / Checkpoints.Count;
-        Debug.Log("Indexing " + IndexAmnt + " per checkpoint");
+        List<GameObject> CheckpointHold = CheckPointManager.GetComponent<FindPath>().checkpoints;   //gather the list of checkpoints from our AI's checkpoint list
+        
+       
         for (int i = 0; i < Racers.Count; i++)
         {
             if(!Racers[i].GetComponent<CarController>())
             {
-                Debug.LogError("Failed Car Controller Add on " + Racers[i].name + " count of: " + i);
+                Debug.LogError("Failed Car Controller Add on " + Racers[i].name + " count of: " + i); //error check, make sure we have a checkpoint controller on the cars
                 Racers.RemoveAt(i);
                 i--;
             }
             else
             {
-                cars.Add(Racers[i].GetComponent<CarController>());
+                cars.Add(Racers[i].GetComponent<CarController>());              //add the checkpoint controller from the car to the list of checkpoint controllers so we can index through them
             }
         }
         
-       
-        Debug.Log("Current racers participants: " + Racers.Count);
-        Debug.Log("Current car controllers found: " + cars.Count);
+        for(int i = 0; i < CheckpointHold.Count; i++)
+        {
+            Checkpoints.Add(CheckpointHold[i].GetComponent<Checkpoint>());
+            Checkpoints[i].checkpointNumber = i;
+        }
+
+        IndexAmnt = 1.0f / Checkpoints.Count;                                   //solve the fraction for what each checkpoint is worth
+        Debug.Log("Indexing " + IndexAmnt + " per checkpoint");                 //stupid check
+        Debug.Log("Current racers participants: " + Racers.Count);              //idiot check
+        Debug.Log("Current car controllers found: " + cars.Count);              //sanity check
         
     }
 
     // Update is called once per frame
     void Update()
     {
-        cars.Sort((s1, s2) => s1.LapCounter.CompareTo(s2.LapCounter));
+        cars.Sort((s1, s2) => s1.LapCounter.CompareTo(s2.LapCounter));                                      //sort the list of cars by who has more laps
         if(cars[0].LapCounter > PreviousLapCounter)
         {
             PreviousLapCounter = cars[0].LapCounter;
-            Debug.Log("Lap progression; leader is " + cars[0].name + " at lap: " + cars[0].LapCounter);
+            //Debug.Log("Lap progression; leader is " + cars[0].name + " at lap: " + cars[0].LapCounter);     //show who the leader is
         }
 
         CarController CurrentPosition;
-        CurrentPosition = cars.Find(o => o.CompareTag("Player"));
-        PlayerLapCounter = CurrentPosition.LapCounter;
+        CurrentPosition = cars.Find(o => o.CompareTag("Player"));                                           //find the player's car 
+        PlayerLapCounter = CurrentPosition.LapCounter;                                                      //store the car's lap info
         
-        int PlayerCar = cars.FindIndex(o => o.CompareTag("Player"));
-        PositionInRace = PlayerCar;
+        int PlayerCar = cars.FindIndex(o => o.CompareTag("Player"));                                        //find the index of the players car in the sorted list 
+        //Debug.Log("player is: " + PlayerCar);
+        PositionInRace = PlayerCar;                                                                         //store the player's position for display to screen
     }
 
 
     void OnGUI()
     {
+        //display the player's info on screen
         lap.text = PlayerLapCounter.ToString();
-        position.text = (PositionInRace + 1).ToString();
+        position.text = PositionInRace.ToString();
     }
 
 }

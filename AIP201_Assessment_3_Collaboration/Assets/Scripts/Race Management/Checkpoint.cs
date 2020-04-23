@@ -10,22 +10,33 @@ public class Checkpoint : MonoBehaviour
 
     void Update()
     {
-        //Check distance between the car's first place & "THIS" checkpoint's position.
-        Vector3 raycastDir = sys.cars[0].transform.position - transform.position;
-        //Raycast from its position to distance and if within 5.0 distance, it'll trigger only if they're both correct values 1=1.
-        if (Physics.Raycast(transform.position, raycastDir, 5.0f, vehicle) && sys.checkpoint_ == checkpointNumber)
+        foreach (CarController car in sys.cars)
         {
-            //Next checkpoint!
-            sys.checkpoint_++;
-            //If the last checkpoint has gone through, it'll reset.
-            if (sys.checkpoint_ >= 4)
+            //Check distance between the car's first place & "THIS" checkpoint's position.
+            Vector3 raycastDir = car.transform.position - transform.position;
+            //Raycast from its position to distance and if within 5.0 distance, it'll trigger only if they're both correct values 1=1.
+            if (Physics.Raycast(transform.position, raycastDir, 5.0f, vehicle) && car.NextCheckpoint == checkpointNumber)
             {
-                sys.cars[0].laps++;
-                sys.checkpoint_ = 0;
+                //Next checkpoint!
+                //sys.checkpoint_++;
+                car.NextCheckpoint++;
+                car.LapCounter += sys.IndexAmnt;
+                //If the last checkpoint has gone through, it'll reset.
+                if (car.NextCheckpoint >= sys.Checkpoints.Count)
+                {
+                    
+                    //sys.cars[0].laps++;
+                    car.laps++;
+                    car.LapCounter = car.laps;
+                    car.NextCheckpoint = 0;
+                }
+                //Checking if this whole thing works w/ raycast.
             }
-            //Checking if this whole thing works w/ raycast.
-            Debug.Log("Works!");
-
         }
+    }
+
+    public void SetCheckpointNumber(int PositionInTrack)
+    {
+        checkpointNumber = PositionInTrack; //holds the position of this checkpoint in relation to the lap
     }
 }
