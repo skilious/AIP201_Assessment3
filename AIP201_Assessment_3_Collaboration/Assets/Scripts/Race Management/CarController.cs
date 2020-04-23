@@ -4,18 +4,16 @@ using UnityEngine;
 
 public class CarController : MonoBehaviour
 {
-    public LapSystem System;
-    public LayerMask layerCheck;
-    public int checkpoints;
     public float LapCounter;
-    public int laps;
-    void FixedUpdate()
+    public LapSystem System;
+    public LayerMask checkpoint;
+
+    void OnTriggerEnter(Collider other)
     {
-        checkpoints = System.checkpoint_;
-        if (Physics.Raycast(transform.position, transform.forward, 0.5f, layerCheck))
+        if(other.CompareTag("CheckPoint"))
         {
-            //Debug.Log("Triggered: " + LapCounter);
-            //LapCounter += System.IndexAmnt;
+            LapCounter += System.IndexAmnt;
+            //Debug.Log("Trigger!: " + LapCounter);
         }
     }
 }
