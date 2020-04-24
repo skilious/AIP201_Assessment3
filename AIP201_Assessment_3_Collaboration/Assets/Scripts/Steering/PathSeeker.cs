@@ -81,11 +81,10 @@ void Update()
 
             Steering = Desired_Velocity - Velocity; //figure difference between target and current
             Steering = Steering / Seeker_Mass; //account for intertia
-
             Steering = Vector3.ClampMagnitude(Steering, Max_Steering);
 
             Velocity = Vector3.ClampMagnitude(Velocity + Steering, Max_Velocity);
-
+            transform.forward = Velocity.normalized;
             //if the hunter gets too close, run away and abandon the target
 
             if (Hunter != null)

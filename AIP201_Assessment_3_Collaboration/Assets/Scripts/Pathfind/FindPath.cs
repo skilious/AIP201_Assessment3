@@ -23,7 +23,7 @@ public class FindPath : MonoBehaviour
        
         float DistanceToNode0 = Vector3.Distance(seeker.position, checkpoints[0].transform.position);
 
-        if(DistanceToNode0 <= 10.0f)
+        if(DistanceToNode0 <= 3.0f)
         {
             checkpoints.Add(checkpoints[0]);
             checkpoints.RemoveAt(0);
