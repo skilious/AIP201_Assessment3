@@ -38,7 +38,7 @@ public class SeekerScript : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate() // changed from update() to fixedupdate() so i could use Time.timescale
     {
        
         if (!NOT_MOVING)

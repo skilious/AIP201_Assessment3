@@ -62,7 +62,7 @@ public class PathSeeker : MonoBehaviour
     
 
 // Update is called once per frame
-void Update()
+void FixedUpdate() // changed from update() to fixedupdate() so i could use Time.timescale
     {
         if (Hunter != null)
         {

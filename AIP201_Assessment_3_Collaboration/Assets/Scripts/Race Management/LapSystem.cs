@@ -20,7 +20,10 @@ public class LapSystem : MonoBehaviour
     int PositionInRace = 0;                     //global for player's car position
     float PlayerLapCounter = 0.0f;              //global for lap + fraction
     public int checkpoint_;                     //current cehckpoint
-    
+
+    public int totalLaps; // max amount of laps to race so we can stop the race
+    public GameObject endScreen; // screen to display when game is over
+
     void Start()
     {
         List<GameObject> CheckpointHold = CheckPointManager.GetComponent<FindPath>().checkpoints;   //gather the list of checkpoints from our AI's checkpoint list
@@ -70,7 +73,15 @@ public class LapSystem : MonoBehaviour
         int PlayerCar = cars.FindIndex(o => o.CompareTag("Player"));                                        //find the index of the players car in the sorted list 
         //Debug.Log("player is: " + PlayerCar);
         PositionInRace = PlayerCar;                                                                         //store the player's position for display to screen
+
+
+        if (PlayerLapCounter >= totalLaps || PreviousLapCounter >= totalLaps) // simulate the end of the game when the total laps have been raced
+        {
+            endScreen.SetActive(true); // awaken the end screen
+            Time.timeScale = 0.3f; // slow down the game
+        }
     }
+
 
 
     void OnGUI()
