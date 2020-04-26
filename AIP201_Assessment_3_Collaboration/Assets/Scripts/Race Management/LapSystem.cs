@@ -43,10 +43,10 @@ public class LapSystem : MonoBehaviour
             }
         }
         
-        for(int i = 0; i < CheckpointHold.Count; i++)
+        for(int i = 0; i < CheckpointHold.Count; i++) //for every cehcpoint
         {
-            Checkpoints.Add(CheckpointHold[i].GetComponent<Checkpoint>());
-            Checkpoints[i].checkpointNumber = i;
+            Checkpoints.Add(CheckpointHold[i].GetComponent<Checkpoint>());      //add the held checkpoint in the last spot of out checkpoint
+            Checkpoints[i].checkpointNumber = i;                                //set the checkpoint number to the position in the list
         }
 
         IndexAmnt = 1.0f / Checkpoints.Count;                                   //solve the fraction for what each checkpoint is worth
@@ -60,25 +60,25 @@ public class LapSystem : MonoBehaviour
     void Update()
     {
         cars.Sort((s1, s2) => s1.LapCounter.CompareTo(s2.LapCounter));                                      //sort the list of cars by who has more laps
-        if(cars[0].LapCounter > PreviousLapCounter)
+        if(cars[cars.Count - 1].LapCounter > PreviousLapCounter)
         {
-            PreviousLapCounter = cars[0].LapCounter;
-            //Debug.Log("Lap progression; leader is " + cars[0].name + " at lap: " + cars[0].LapCounter);     //show who the leader is
+            PreviousLapCounter = cars[cars.Count - 1].LapCounter;
+            Debug.Log("Lap progression; leader is " + cars[cars.Count -1].name + " at lap: " + cars[cars.Count - 1].LapCounter);     //show who the leader is
         }
 
         CarController CurrentPosition;
         CurrentPosition = cars.Find(o => o.CompareTag("Player"));                                           //find the player's car 
         PlayerLapCounter = CurrentPosition.LapCounter;                                                      //store the car's lap info
-        
-        int PlayerCar = cars.FindIndex(o => o.CompareTag("Player"));                                        //find the index of the players car in the sorted list 
+        int PlayerCar = cars.Count - cars.FindIndex(o => o.CompareTag("Player"));                           //find the index of the players car in the sorted list 
         //Debug.Log("player is: " + PlayerCar);
         PositionInRace = PlayerCar;                                                                         //store the player's position for display to screen
 
 
         if (PlayerLapCounter >= totalLaps || PreviousLapCounter >= totalLaps) // simulate the end of the game when the total laps have been raced
+            ///previous lap counter should always be equal to the player lap counter if player is in lead -- this if statement seems superflous
         {
-            endScreen.SetActive(true); // awaken the end screen
-            Time.timeScale = 0.0f; // slow down the game
+            endScreen.SetActive(true);          // awaken the end screen
+            Time.timeScale = 0.0f;              // slow down the game
         }
     }
 
