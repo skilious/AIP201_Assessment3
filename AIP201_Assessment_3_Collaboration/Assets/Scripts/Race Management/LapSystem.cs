@@ -78,7 +78,7 @@ public class LapSystem : MonoBehaviour
         if (PlayerLapCounter >= totalLaps || PreviousLapCounter >= totalLaps) // simulate the end of the game when the total laps have been raced
         {
             endScreen.SetActive(true); // awaken the end screen
-            Time.timeScale = 0.3f; // slow down the game
+            Time.timeScale = 0.0f; // slow down the game
         }
     }
 

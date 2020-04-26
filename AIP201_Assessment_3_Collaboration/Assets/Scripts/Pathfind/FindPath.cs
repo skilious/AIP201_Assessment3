@@ -23,7 +23,7 @@ public class FindPath : MonoBehaviour
        
         float DistanceToNode0 = Vector3.Distance(seeker.position, checkpoints[0].transform.position);
 
-        if(DistanceToNode0 <= 3.0f)
+        if(DistanceToNode0 <= 5.0f)
         {
             checkpoints.Add(checkpoints[0]);
             checkpoints.RemoveAt(0);
@@ -65,11 +65,11 @@ public class FindPath : MonoBehaviour
                     continue;
                 }
 
-                int NewMovementCostToNeighbour = CurrentNode.GCost + GetDistance(CurrentNode, neighbour); //add GCOST to distance to neighbour
+                int NewMovementCostToNeighbour = CurrentNode.GCost + /*GetDistance*/GetManhattenDistance(CurrentNode, neighbour); //add GCOST to distance to neighbour
                 if(NewMovementCostToNeighbour < neighbour.GCost || !openSet.Contains(neighbour)) //if this is a faster path to the neighbour, or we haven't touched it before
                 {
                     neighbour.GCost = NewMovementCostToNeighbour; //set the neighbour's GCOST
-                    neighbour.HCost = GetDistance(neighbour, TargetNode); //calculate and set the  neighbour's HCOST
+                    neighbour.HCost = /*GetDistance*/GetManhattenDistance(neighbour, TargetNode); //calculate and set the  neighbour's HCOST
                     neighbour.parent = CurrentNode; //connect the dots
                     
                     if(!openSet.Contains(neighbour)) //if we've closed it
@@ -93,7 +93,14 @@ public class FindPath : MonoBehaviour
             return 14 * dstX * 10 * (dstY - dstX);
         /*break our distance into X and Y components, 14  (1.4 = sqrt 2), or 10 for straight line -- this favours straight lines, and minimises the diagonals taken */
     }
+    //New version - Testing purposes.
+    int GetManhattenDistance(Node nodeA_, Node nodeB_)
+    {
+        int iy = Mathf.Abs(nodeA_.GridY - nodeB_.GridY);
+        int ix = Mathf.Abs(nodeA_.GridX - nodeB_.GridX);
 
+        return ix + iy;
+    }
 
     void TreadPath(Node startNode, Node EndNode)
     {
