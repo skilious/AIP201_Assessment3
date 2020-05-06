@@ -14,8 +14,8 @@ public class Checkpoint : MonoBehaviour
         {
             //Check distance between the car's first place & "THIS" checkpoint's position.
             Vector3 raycastDir = car.transform.position - transform.position;
-            //Raycast from its position to distance and if within 5.0 distance, it'll trigger only if they're both correct values 1=1.
-            if (Physics.Raycast(transform.position, raycastDir, 5.0f, vehicle) && car.NextCheckpoint == checkpointNumber)
+            //Raycast from its position to distance and if within 10.0 distance, it'll trigger only if they're both correct values 1=1.
+            if (Physics.Raycast(transform.position, raycastDir, 10.0f, vehicle) && car.NextCheckpoint == checkpointNumber)
             {
                 //Next checkpoint!
                 //sys.checkpoint_++;
