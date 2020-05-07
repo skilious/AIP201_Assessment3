@@ -27,7 +27,7 @@ public class PathSeeker : MonoBehaviour
     public Reaction seekerstate = Reaction.seek;
 
     List<Node> FollowMe;
-    List<Node> Unwalkable;
+    //List<Node> Unwalkable;
     public LayerMask AvoidMe;
     
     
